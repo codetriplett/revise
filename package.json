@@ -1,0 +1,20 @@
+{
+  "name": "@triplett/revise",
+  "version": "0.0.0",
+  "description": "A simple UI to manage JSON revisions",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "keywords": [
+    "json",
+    "ui"
+  ],
+  "author": "triplett",
+  "license": "MIT",
+  "dependencies": {
+    "@triplett/stew": "^2.3.0",
+    "@triplett/steward": "^1.1.0"
+  }
+}

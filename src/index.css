@@ -1,0 +1,163 @@
+.label,
+.property,
+button {
+	cursor: pointer;
+}
+
+.label {
+	float: left;
+	margin-right: 10px;
+	font-weight: bold;
+}
+.label::before {
+	content: '"';
+}
+.label::after {
+	content: '":';
+}
+
+.property {
+	margin-left: 30px;
+	padding: 3px;
+	border-radius: 5px;
+}
+.property + .property {
+	margin-top: 5px;
+}
+
+.value {
+	margin: 0;
+	padding-left: 30px;
+}
+
+.is-string::before {
+	content: '"';
+}
+.is-string::after {
+	content: '"';
+}
+
+.object::before {
+	content: '{';
+}
+.object::after {
+	content: '}';
+}
+.property:not(:last-child) .object::after {
+	content: '},';
+}
+
+.property {
+	border: 3px solid transparent;
+	color: #0005;
+}
+.property:hover {
+	color: black;
+}
+
+.object .in-defaults {
+	background: white;
+}
+
+.object .in-overrides {
+	background: #7bf;
+	color: black;
+}
+
+.object .in-candidates {
+	border-color: #fb7;
+}
+
+.modal {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+.modal-backdrop {
+	content: '';
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: #000b;
+}
+.modal-content {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	box-sizing: border-box;
+	width: 75%;
+	height: 80%;
+	padding: 20px 30px;
+	transform: translate(-50%, -50%);
+	background: white;
+}
+.modal-heading {
+	margin: 0;
+	font-size: 32px;
+}
+.modal-promote,
+.modal-close,
+.modal-label,
+.modal-type,
+.modal-update,
+.modal-textarea {
+	position: absolute;
+}
+.modal-type,
+.modal-textarea {
+	left: 30px;
+}
+.modal-close {
+	top: 30px;
+}
+.modal-close,
+.modal-update {
+	right: 30px;
+}
+.modal-promote,
+.modal-type,
+.modal-update {
+	bottom: 30px;
+}
+.modal-promote {
+	left: 50%;
+	transform: translateX(-50%);
+}
+.modal-textarea {
+	top: 75px;
+	box-sizing: border-box;
+	width: calc(100% - 60px);
+	height: calc(100% - 155px);
+	resize: none;
+}
+.modal-type {
+	padding-right: 20px;
+	border-radius: 2px;
+	background: lightgray;
+	cursor: pointer;
+}
+.modal-type div {
+	padding: 3px 7px;
+	border-radius: 2px;
+	background: gray;
+	transition: background 200ms, transform 200ms;
+	color: lightgray;
+}
+.modal-type input[type=checkbox] {
+	display: none;
+}
+.modal-type input[type=checkbox]:checked + div {
+	background: #070;
+	transform: translateX(20px);
+}
+.is-invalid {
+	border-color: red;
+}
+.error-message {
+	margin-left: 20px;
+    font-size: 15px;
+    font-weight: normal;
+	color: red;
+}

@@ -1,0 +1,7 @@
+{
+	"prod": true,
+	"value": "prod",
+	"object": {
+		"value": "abc"
+	}
+}
