@@ -1,0 +1,73 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+pre { opacity: 0.5; }
+.defaults { color: gray; }
+.overrides { color: orange; }
+.candidates { color: blue; }
+.property { display: block; height: 18px; }
+.property button { height: 100%; font-size: 12px; line-height: 12px; z-index: 1; }
+
+button {
+	border: 1px solid black;
+	border-radius: 3px;
+	border-bottom-right-radius: 9px;
+	border-top-left-radius: 9px;
+	font-size: 15px;
+	line-height: 15px;
+	height: 25px;
+}
+
+.root, .object {
+	position: relative;
+	width: 0;
+}
+
+.root {
+	position: absolute;
+	left: 7px;
+	top: 29px;
+}
+
+.object {
+	left: 33px;
+}
+
+.root button {
+	content: '??';
+	width: 30px;
+	font-weight: bold;
+}
+
+.object { padding-bottom: 18px; }
+.revert { border-color: #f33; color: #f33; background: #fcc; }
+.revert:before { content: '<<'; }
+.promote { border-color: #33f; color: #33f; background: #ccf; }
+.promote:before { content: '>>'; }
+
+pre, textarea {
+	font-family: monospace;
+	margin: 0;
+	padding: 12px 5px;
+	font-size: 15px;
+	line-height: 18px;
+	-webkit-tab-size: 4;
+	   -moz-tab-size: 4;
+	     -o-tab-size: 4;
+	        tab-size: 4;
+	background: transparent;
+}
+
+pre, .toggle { position: absolute; }
+pre { left: 0; top: 0; z-index: -1; }
+.toggle { right: 5px; top: 5px; }
+.submit { float: right; position: relative; left: -5px; top: -51px; }
+
+textarea {
+	border: none;
+	outline: none;
+	min-width: 100vw;
+	white-space: nowrap;
+	resize: none;
+	overflow: hidden;
+}
+

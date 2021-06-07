@@ -1,0 +1,11 @@
+{
+	"test": true,
+	"value": "test",
+	"object": {
+		"test": true,
+		"value": "test"
+	},
+	"array": [
+		"test"
+	]
+}

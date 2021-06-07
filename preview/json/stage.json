@@ -1,0 +1,11 @@
+{
+	"stage": true,
+	"value": "stage",
+	"object": {
+		"stage": true,
+		"value": "stage"
+	},
+	"array": [
+		"stage"
+	]
+}

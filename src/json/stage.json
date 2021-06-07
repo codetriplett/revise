@@ -1,9 +1,0 @@
-{
-	"stage": true,
-	"value": "stage",
-	"object": {
-		"string": "abc",
-		"number": 123,
-		"boolean": true
-	}
-}
