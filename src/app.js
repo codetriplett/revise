@@ -1,65 +1,13 @@
 import $ from '@triplett/stew';
 import arrange from './arrange';
-import extract from './extract';
+import Buttons from './buttons';
+import merge from './merge';
 import stringify from './stringify';
-
-function Buttons ({ object, composite, update }) {
-	const [key, sources, arrayed, ...composites] = composite;
-	const [custom,, overrides, candidates] = sources;
-	const subobject = object[key];
-	let state = '';
-
-	function subupdate (value) {
-		const result = Array.isArray(object) ? [] : {};
-		update(Object.assign(result, { ...object, [key]: value }));
-	}
-
-	if (custom !== composite && custom !== overrides) state = 'revert';
-	else if (candidates !== undefined) state = 'promote';
-
-	return $`
-		<div class="property">
-			${state && $`
-				<button
-					class=${state}
-					type="button"
-					onclick=${() => {
-						let index;
-
-						switch (state) {
-							case 'revert': index = 2; break;
-							case 'promote': index = 3; break;
-							default: return;
-						}
-
-						let value = sources[index];
-
-						if (value === composite) {
-							value = extract(value, index, subobject);
-						}
-
-						subupdate(value);
-					}}
-				/>`
-			}
-		</>
-		${arrayed !== undefined && $`
-			<div class="object">
-				${composites.map(it => $`
-					<${Buttons}
-						object=${subobject}
-						composite=${it}
-						update=${subupdate}
-					/>
-				`)}
-			</>
-		`}
-	`;
-}
 
 export default function App ({
 	'': {
 		'': hook,
+		path,
 		defaults,
 		overrides,
 		candidates,
@@ -68,6 +16,10 @@ export default function App ({
 		collapsed
 	}
 }) {
+	if (value && !candidates) {
+		return $`<pre class="composite">${value}</>`;
+	}
+
 	let strings = [value || '{\n}', '', '', ''], object, composite;
 	try { object = JSON.parse(value); } catch (err) {}
 
@@ -76,7 +28,7 @@ export default function App ({
 		composite = arrange([object, ...sources]);
 		strings = stringify(composite);
 	}
-	
+
 	const [
 		objectString,
 		defaultsString,
@@ -87,6 +39,21 @@ export default function App ({
 	return $`
 		${prev => {
 			if (prev) {
+				if (!typing && !collapsed && object && (object[''] || '') !== path) {
+					let promise = Promise.resolve();
+					path = (object[''] || '');
+
+					if (path) {
+						promise = fetch(`${path.replace(/^(?!\/)/, '/')}.json`)
+							.then(data => data.json());
+					}
+
+					promise.catch(() => {}).then(defaults => hook({
+						path,
+						defaults
+					}));
+				}
+
 				const textarea = hook('textarea');
 				const { scrollX, scrollY } = window;
 
@@ -104,36 +71,44 @@ export default function App ({
 				return;
 			}
 
-			const { pathname, search, hash } = window.location;
-			const params = {};
-
-			for (const string of search.slice(1).split('&')) {
-				const index = string.indexOf('=');
-				if (!~index) params[string] = pathname;
-				else params[string.slice(0, index)] = string.slice(index + 1);
-			}
-
-			const method = ['post', 'put', 'get'].find(key => () => {
-				return Object.prototype.hasOwnProperty.call(params, key)
-			});
-
-			const destination = params[method];
+			const { pathname, hash, href } = window.location;
+			const editing = ~href.indexOf('#');
 
 			Promise.all([
 				`${pathname}.json`,
-				`${destination}.json`,
-				`${hash.slice(1)}.json`
+				hash.length > 1 && `${hash.slice(1).replace(/^(?!\/)/, '/')}.json`
 			].map(path => {
-				return fetch(path).then(data => data.json());
-			})).then(([defaults, overrides, candidates]) => {
-				const composite = arrange([overrides, defaults, {}, candidates]);
-				const [objectString] = stringify(composite);
+				return path && fetch(path).then(data => data.json());
+			})).then(([overrides, candidates]) => {
+				if (!editing) {
+					merge(overrides).then(object => {
+						hook({
+							value: JSON.stringify(object, null, '\t')
+						});
+					});
 
-				hook({
-					defaults,
-					overrides,
-					candidates,
-					value: objectString
+					return;
+				}
+
+				const { '': path } = overrides;
+				let promise = Promise.resolve();
+				if (!candidates) candidates = {};
+
+				if (path) {
+					promise = fetch(`${path.replace(/^(?!\/)/, '/')}.json`)
+						.then(data => data.json());
+				}
+
+				promise.then(defaults => {
+					const composite = arrange([
+						overrides,
+						defaults,
+						{},
+						candidates
+					]);
+
+					const [value] = stringify(composite);
+					hook({ path, defaults, overrides, candidates, value });
 				});
 			});
 		}}
@@ -144,7 +119,7 @@ export default function App ({
 				disabled=${!object}
 				onclick=${() => hook({ typing: false, collapsed: false })}
 			>Show</>
-		` :$`
+		` : $`
 			<button
 				class="toggle"
 				type="button"

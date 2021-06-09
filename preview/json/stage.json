@@ -1,4 +1,5 @@
 {
+	"": "json/prod",
 	"stage": true,
 	"value": "stage",
 	"object": {

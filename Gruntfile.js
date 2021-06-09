@@ -77,7 +77,9 @@ module.exports = function (grunt) {
 	grunt.registerTask('before', () => {
 		merge('./dist/app.min.js', [
 			'./src/arrange.js',
+			'./src/buttons.js',
 			'./src/extract.js',
+			'./src/merge.js',
 			'./src/stringify.js',
 			'./src/app.js',
 		]);

@@ -1,9 +1,5 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
-pre { opacity: 0.5; }
-.defaults { color: gray; }
-.overrides { color: orange; }
-.candidates { color: blue; }
 .property { display: block; height: 18px; }
 .property button { height: 100%; font-size: 12px; line-height: 12px; z-index: 1; }
 
@@ -58,7 +54,11 @@ pre, textarea {
 }
 
 pre, .toggle { position: absolute; }
-pre { left: 0; top: 0; z-index: -1; }
+pre { left: 0; top: 0; z-index: -1; opacity: 0.5; }
+.defaults { color: gray; }
+.overrides { color: orange; }
+.candidates { color: blue; }
+.composite { opacity: 1; }
 .toggle { right: 5px; top: 5px; }
 .submit { float: right; position: relative; left: -5px; top: -51px; }
 
@@ -70,4 +70,3 @@ textarea {
 	resize: none;
 	overflow: hidden;
 }
-

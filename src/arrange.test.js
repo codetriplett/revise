@@ -121,6 +121,40 @@ describe('arrange', () => {
 			['0', ['a', 'b']]
 		]);
 	});
+
+	it('ignores identical values', () => {
+		const actual = arrange([
+			{ id: 'abc' },
+			{ id: 'abc' }
+		]);
+
+		const [key, [first, second]] = actual;
+		expect(key).toEqual(undefined);
+		expect(first).toBe(actual);
+		expect(second).toEqual(undefined);
+
+		expect(actual.slice(2)).toEqual([
+			false,
+			['id', ['abc', undefined]]
+		]);
+	});
+
+	it('ignores identical objects', () => {
+		const actual = arrange([
+			{ object: { id: 'abc' } },
+			{ object: { id: 'abc' } }
+		], 'object');
+
+		const [key, [first, second]] = actual;
+		expect(key).toEqual('object');
+		expect(first).toBe(actual);
+		expect(second).toEqual(undefined);
+
+		expect(actual.slice(2)).toEqual([
+			false,
+			['id', ['abc', undefined]]
+		]);
+	});
 	
 	it('excludes non objects that follow', () => {
 		const actual = arrange([
