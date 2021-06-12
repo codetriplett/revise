@@ -19,7 +19,7 @@ export default function Buttons ({ object, composite, update }) {
 
 	return $`
 		<div class="property">
-			${state && $`
+			${key && state && $`
 				<button
 					class=${state}
 					type="button"

@@ -22,18 +22,16 @@ function respond (url) {
 	});
 }
 
-export default function revise (port, directory, resolve) {
-	require('@triplett/steward')(port, [
-		directory
-	], () => {
-		return render('Home Page');
-	})(/^(.+?(\.[^.]*)?)$/, (props, url, ext, file) => {
+export default function revise (port, [directory, ...files], home) {
+	return require('@triplett/steward')(port, [
+		directory,
+		...files
+	], home)(/^(.+?(\.[^.]*)?)$/, (props, url, ext, file) => {
 		if (!ext) {
 			return render('Revise', { '': '#App' });
 		} else if (ext === '.json') {
-			if (resolve) return resolve(url, props, file);
 			const { '': body } = props;
-			return body ? file(url, body) : file(url)
+			return body ? file(url, body.file) : file(url);
 		}
 
 		return respond(`${__dirname}/${url}`);

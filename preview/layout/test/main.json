@@ -1,0 +1,15 @@
+{
+	"": "/layout/stage/main.json",
+	"components": [
+		{
+			"": "/components/test/media.json",
+			"layout-value": "media (test)",
+			"layout-test": true
+		},
+		{
+			"": "/components/test/details.json",
+			"layout-value": "details (test)",
+			"layout-test": true
+		}
+	]
+}

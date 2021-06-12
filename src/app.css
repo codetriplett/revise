@@ -6,8 +6,6 @@ html, body { margin: 0; }
 button {
 	border: 1px solid black;
 	border-radius: 3px;
-	border-bottom-right-radius: 9px;
-	border-top-left-radius: 9px;
 	font-size: 15px;
 	line-height: 15px;
 	height: 25px;

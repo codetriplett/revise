@@ -1,27 +1,23 @@
-export default function merge (object) {
-	if (!object || typeof object !== 'object') {
-		return object;
-	} else if (Array.isArray(object)) {
-		return object.map(merge);
-	} else if (!Object.prototype.hasOwnProperty.call(object, '')) {
-		const result = {};
+export default function merge (defaults, overrides = defaults) {
+	if (!overrides || typeof overrides !== 'object') {
+		return overrides;
+	} else if (Array.isArray(overrides)) {
+		if (!Array.isArray(defaults)) defaults = [];
 
-		for (const [key, value] of Object.entries(object)) {
-			result[key] = merge(value);
-		}
-
-		return result;
+		return overrides
+			.map((it, i) => merge(defaults[i], it))
+			.filter(it => it !== undefined);
 	}
 
-	const { '': path, ...overrides } = object;
-	let promise = Promise.resolve();
+	const keys = Object.keys(overrides);
+	if (!keys.length) return;
+	keys.unshift(...Object.keys(defaults));
+	const composite = {};
 
-	if (path) {
-		promise = fetch(`${path.replace(/^(?!\/)/, '/')}.json`)
-			.then(data => data.json());
+	for (const key of [...new Set(keys)]) {
+		const value = merge(defaults[key], overrides[key]);
+		if (value !== undefined) composite[key] = value;
 	}
 
-	return promise.then(defaults => {
-		return merge({ ...defaults, ...overrides });
-	});
+	return composite;
 }

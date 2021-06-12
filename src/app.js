@@ -1,7 +1,7 @@
 import $ from '@triplett/stew';
 import arrange from './arrange';
 import Buttons from './buttons';
-import merge from './merge';
+import resolve from './resolve';
 import stringify from './stringify';
 
 export default function App ({
@@ -16,7 +16,7 @@ export default function App ({
 		collapsed
 	}
 }) {
-	if (value && !candidates) {
+	if (value !== undefined && !candidates) {
 		return $`<pre class="composite">${value}</>`;
 	}
 
@@ -81,9 +81,9 @@ export default function App ({
 				return path && fetch(path).then(data => data.json());
 			})).then(([overrides, candidates]) => {
 				if (!editing) {
-					merge(overrides).then(object => {
+					resolve(overrides).then(composite => {
 						hook({
-							value: JSON.stringify(object, null, '\t')
+							value: composite ? JSON.stringify(composite, null, '\t') : ''
 						});
 					});
 
@@ -93,11 +93,7 @@ export default function App ({
 				const { '': path } = overrides;
 				let promise = Promise.resolve();
 				if (!candidates) candidates = {};
-
-				if (path) {
-					promise = fetch(`${path.replace(/^(?!\/)/, '/')}.json`)
-						.then(data => data.json());
-				}
+				if (path) promise = fetch(path).then(data => data.json());
 
 				promise.then(defaults => {
 					const composite = arrange([
@@ -123,6 +119,7 @@ export default function App ({
 			<button
 				class="toggle"
 				type="button"
+				disabled=${!object}
 				onclick=${() => hook({ typing: false, collapsed: true })}
 			>Hide</>
 			<pre class="defaults">${defaultsString}</>
@@ -152,10 +149,15 @@ export default function App ({
 		<button
 			class="submit"
 			type="button"
+			disabled=${!object}
 			onclick=${() => {
-				try { object = JSON.parse(value); } catch (err) {}
-				value = JSON.stringify(value, null, '\t');
-				console.log('== submit ==', value);
+				const { pathname } = window.location;
+				const file = objectString.replace(/\n+(?=\n)/g, '');
+
+				fetch(`${pathname}.json`, {
+					method: 'POST',
+					body: `{"file":${JSON.stringify(file)}}`
+				});
 			}}
 		>Submit</>
 	`;

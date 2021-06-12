@@ -8,7 +8,7 @@ export default function extract (composite, index, object) {
 
 	for (const composite of content) {
 		const [key] = composite;
-		result[key] = extract(composite, index, object[key]);
+		result[key] = extract(composite, key ? index : 0, object[key]);
 	}
 
 	return result;

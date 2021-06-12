@@ -78,8 +78,10 @@ module.exports = function (grunt) {
 		merge('./dist/app.min.js', [
 			'./src/arrange.js',
 			'./src/buttons.js',
+			'./src/expand.js',
 			'./src/extract.js',
 			'./src/merge.js',
+			'./src/resolve.js',
 			'./src/stringify.js',
 			'./src/app.js',
 		]);

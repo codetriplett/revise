@@ -1,0 +1,14 @@
+{
+	"components": [
+		{
+			"": "/components/media.json",
+			"layout-value": "media (prod)",
+			"layout-prod": true
+		},
+		{
+			"": "/components/details.json",
+			"layout-value": "details (prod)",
+			"layout-prod": true
+		}
+	]
+}
