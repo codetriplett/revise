@@ -1,5 +1,5 @@
 export default function stringify (composite, indentation = '') {
-	const [, sources, arrayed, ...content] = composite;
+	const [, sources,, arrayed, ...content] = composite;
 	const strings = Array(sources.length).fill('');
 	let index = sources.findIndex(it => it === composite);
 

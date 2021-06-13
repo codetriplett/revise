@@ -19,7 +19,6 @@ describe('resolve', () => {
 
 			switch (path) {
 				case '/layout.json': return Promise.resolve({
-					'': '/layout.json',
 					component: {
 						'': '/component.json',
 						value: 'layout',
@@ -29,7 +28,6 @@ describe('resolve', () => {
 					layout: true
 				});
 				case '/component.json': return Promise.resolve({
-					'': '/component.json',
 					value: 'component',
 					layout: true,
 					component: true
@@ -52,16 +50,14 @@ describe('resolve', () => {
 					component: {
 						'': '/component.json'
 					}
-				},
-				undefined
+				}
 			],
 			[
 				{
 					'': '/component.json',
 					value: 'layout',
 					layout: true
-				},
-				'/layout.json'
+				}
 			]
 		]);
 
@@ -82,7 +78,6 @@ describe('resolve', () => {
 
 			switch (path) {
 				case '/layout.json': return Promise.resolve({
-					'': '/layout.json',
 					component: {
 						'': '/component.json',
 						value: 'layout',

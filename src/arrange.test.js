@@ -13,16 +13,21 @@ describe('arrange', () => {
 			}
 		]);
 
-		const [key, [first, second]] = actual;
+		const [key, [first, second], [one]] = actual;
 		expect(key).toEqual(undefined);
 		expect(first).toBe(actual);
 		expect(second).toBe(actual);
 
-		expect(actual.slice(2)).toEqual([
+		expect(one).toEqual({
+			id: 'b',
+			b: true
+		});
+
+		expect(actual.slice(3)).toEqual([
 			false,
-			['id', ['a', 'b']],
-			['a', [true, undefined]],
-			['b', [undefined, true]]
+			['id', ['a', 'b'], ['b']],
+			['a', [true, undefined], [undefined]],
+			['b', [undefined, true], [true]]
 		]);
 	});
 
@@ -42,16 +47,21 @@ describe('arrange', () => {
 			}
 		], 'object');
 
-		const [key, [first, second]] = actual;
+		const [key, [first, second], [one]] = actual;
 		expect(key).toEqual('object')
 		expect(first).toBe(actual);
 		expect(second).toBe(actual);
 
-		expect(actual.slice(2)).toEqual([
+		expect(one).toEqual({
+			id: 'b',
+			b: true
+		});
+
+		expect(actual.slice(3)).toEqual([
 			false,
-			['id', ['a', 'b']],
-			['a', [true, undefined]],
-			['b', [undefined, true]]
+			['id', ['a', 'b'], ['b']],
+			['a', [true, undefined], [undefined]],
+			['b', [undefined, true], [true]]
 		]);
 	});
 
@@ -71,16 +81,21 @@ describe('arrange', () => {
 			]
 		], '0');
 
-		const [key, [first, second]] = actual;
+		const [key, [first, second], [one]] = actual;
 		expect(key).toEqual('0');
 		expect(first).toBe(actual);
 		expect(second).toBe(actual);
 
-		expect(actual.slice(2)).toEqual([
+		expect(one).toEqual({
+			id: 'b',
+			b: true
+		});
+
+		expect(actual.slice(3)).toEqual([
 			false,
-			['id', ['a', 'b']],
-			['a', [true, undefined]],
-			['b', [undefined, true]]
+			['id', ['a', 'b'], ['b']],
+			['a', [true, undefined], [undefined]],
+			['b', [undefined, true], [true]]
 		]);
 	});
 
@@ -90,14 +105,15 @@ describe('arrange', () => {
 			{ array: ['b'] }
 		], 'array');
 
-		const [key, [first, second]] = actual;
+		const [key, [first, second], [one]] = actual;
 		expect(key).toEqual('array');
 		expect(first).toBe(actual);
 		expect(second).toBe(actual);
+		expect(one).toEqual(['b']);
 
-		expect(actual.slice(2)).toEqual([
+		expect(actual.slice(3)).toEqual([
 			true,
-			['0', ['a', 'b']]
+			['0', ['a', 'b'], ['b']]
 		]);
 	});
 
@@ -111,48 +127,15 @@ describe('arrange', () => {
 			]
 		], '0');
 
-		const [key, [first, second]] = actual;
+		const [key, [first, second], [one]] = actual;
 		expect(key).toEqual('0');
 		expect(first).toBe(actual);
 		expect(second).toBe(actual);
+		expect(one).toEqual(['b']);
 
-		expect(actual.slice(2)).toEqual([
+		expect(actual.slice(3)).toEqual([
 			true,
-			['0', ['a', 'b']]
-		]);
-	});
-
-	it('ignores identical values', () => {
-		const actual = arrange([
-			{ id: 'abc' },
-			{ id: 'abc' }
-		]);
-
-		const [key, [first, second]] = actual;
-		expect(key).toEqual(undefined);
-		expect(first).toBe(actual);
-		expect(second).toEqual(undefined);
-
-		expect(actual.slice(2)).toEqual([
-			false,
-			['id', ['abc', undefined]]
-		]);
-	});
-
-	it('ignores identical objects', () => {
-		const actual = arrange([
-			{ object: { id: 'abc' } },
-			{ object: { id: 'abc' } }
-		], 'object');
-
-		const [key, [first, second]] = actual;
-		expect(key).toEqual('object');
-		expect(first).toBe(actual);
-		expect(second).toEqual(undefined);
-
-		expect(actual.slice(2)).toEqual([
-			false,
-			['id', ['abc', undefined]]
+			['0', ['a', 'b'], ['b']]
 		]);
 	});
 	
@@ -169,15 +152,16 @@ describe('arrange', () => {
 			}
 		], 'object');
 
-		const [key, [first, second]] = actual;
+		const [key, [first, second], [one]] = actual;
 		expect(key).toEqual('object');
 		expect(first).toBe(actual);
 		expect(second).toEqual('b');
+		expect(one).toEqual('b');
 
-		expect(actual.slice(2)).toEqual([
+		expect(actual.slice(3)).toEqual([
 			false,
-			['id', ['a', undefined]],
-			['a', [true, undefined]]
+			['id', ['a', undefined], [undefined]],
+			['a', [true, undefined], [undefined]]
 		]);
 	});
 	
@@ -193,14 +177,18 @@ describe('arrange', () => {
 			}
 		], 'object');
 
-		const [key, [first, second]] = actual;
+		const [key, [first, second], [one]] = actual;
 		expect(key).toEqual('object');
 		expect(first).toBe(actual);
 		expect(second).toEqual({ 0: 'b' });
 
-		expect(actual.slice(2)).toEqual([
+		expect(one).toEqual({
+			0: 'b'
+		});
+
+		expect(actual.slice(3)).toEqual([
 			true,
-			['0', ['a', undefined]]
+			['0', ['a', undefined], [undefined]]
 		]);
 	});
 	
@@ -215,15 +203,20 @@ describe('arrange', () => {
 			}
 		], 'object');
 
-		const [key, [first, second]] = actual;
+		const [key, [first, second], [one]] = actual;
 		expect(key).toEqual('object');
 		expect(first).toEqual(undefined);
 		expect(second).toBe(actual);
 
-		expect(actual.slice(2)).toEqual([
+		expect(one).toEqual({
+			id: 'b',
+			b: true
+		});
+
+		expect(actual.slice(3)).toEqual([
 			false,
-			['id', [undefined, 'b']],
-			['b', [undefined, true]]
+			['id', [undefined, 'b'], ['b']],
+			['b', [undefined, true], [true]]
 		]);
 	});
 });

@@ -1,5 +1,5 @@
 export default function extract (composite, index, object) {
-	const [, sources, arrayed, ...content] = composite;
+	const [, sources,, arrayed, ...content] = composite;
 	const value = sources[index];
 	if (value === undefined) return object;
 	else if (value !== composite) return value;

@@ -81,11 +81,9 @@ export default function App ({
 				return path && fetch(path).then(data => data.json());
 			})).then(([overrides, candidates]) => {
 				if (!editing) {
-					resolve(overrides).then(composite => {
-						hook({
-							value: composite ? JSON.stringify(composite, null, '\t') : ''
-						});
-					});
+					resolve(overrides).then(it => hook({
+						value: it ? JSON.stringify(it, null, '\t') : ''
+					}));
 
 					return;
 				}
@@ -99,7 +97,7 @@ export default function App ({
 					const composite = arrange([
 						overrides,
 						defaults,
-						{},
+						overrides,
 						candidates
 					]);
 
@@ -127,7 +125,7 @@ export default function App ({
 			<pre class="candidates">${candidatesString}</>
 			${composite && $`
 				<div class="root">
-					${composite.slice(3).map(composite => $`
+					${composite.slice(4).map(composite => $`
 						<${Buttons}
 							object=${object}
 							composite=${composite}

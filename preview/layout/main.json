@@ -1,12 +1,12 @@
 {
 	"components": [
 		{
-			"": "/components/media.json",
+			"": "/component/media.json",
 			"layout-value": "media (prod)",
 			"layout-prod": true
 		},
 		{
-			"": "/components/details.json",
+			"": "/component/details.json",
 			"layout-value": "details (prod)",
 			"layout-prod": true
 		}

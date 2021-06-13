@@ -1,21 +1,25 @@
 import extract from './extract';
 
-export default function Buttons ({ object, composite, update }) {
-	const [key, sources, arrayed, ...composites] = composite;
+export default function Buttons ({ object = {}, composite, update }) {
+	const [key, sources, states, arrayed, ...composites] = composite;
 	const [custom,, overrides, candidates] = sources;
 	const subobject = object[key];
 	let state = '';
 
 	function subupdate (value) {
 		const result = Array.isArray(object) ? [] : {};
-		update(Object.assign(result, { ...object, [key]: value }));
+		Object.assign(result, { ...object, [key]: value });
+
+		if (value === undefined) {
+			if (Array.isArray(object)) result.splice(key, 1);
+			else delete result[key];
+		}
+
+		update(result);
 	}
 
-	if (custom !== composite ? custom !== overrides : overrides === composite) {
-		state = 'revert';
-	} else if (candidates !== undefined) {
-		state = 'promote';
-	}
+	if (states[1] !== composite) state = 'revert';
+	else if (candidates !== undefined) state = 'promote';
 
 	return $`
 		<div class="property">
@@ -24,14 +28,12 @@ export default function Buttons ({ object, composite, update }) {
 					class=${state}
 					type="button"
 					onclick=${() => {
-						let index;
-
-						switch (state) {
-							case 'revert': index = 2; break;
-							case 'promote': index = 3; break;
-							default: return;
+						if (state === 'revert') {
+							subupdate(states[1]);
+							return;
 						}
 
+						const index = 3;
 						let value = sources[index];
 
 						if (value === composite) {

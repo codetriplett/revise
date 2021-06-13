@@ -11,9 +11,17 @@ export default function arrange (sources, key) {
 	const arrayed = Array.isArray(object);
 	const values = Array(length).fill(undefined);
 	const composite = [key, values];
+	const states = Array(length - 1).fill(composite);
+	const backup = [...sources];
+	composite.push(states);
 
 	if (!object || typeof object !== 'object') {
 		Object.assign(values, sources);
+
+		for (const [i, it] of sources.slice(1).entries()) {
+			if (it !== sources[0]) states[i] = it;
+		}
+
 		return composite;
 	}
 
@@ -31,8 +39,12 @@ export default function arrange (sources, key) {
 
 	for (const key of new Set([].concat(...keys))) {
 		const subcomposite = arrange(sources, key);
-		const [, subsources] = subcomposite;
+		const [subkey, subsources, substates] = subcomposite;
 		const subobject = subsources[index];
+
+		for (const [i, state] of substates.entries()) {
+			if (subkey && state !== subcomposite) states[i] = backup[i + 1];
+		}
 
 		for (const [i, source] of subcomposite[1].entries()) {
 			if (i === index || source !== undefined && source !== subobject) {

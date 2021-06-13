@@ -1,23 +1,22 @@
 import expand from './expand';
 
-export default function resolve (composite, root) {
+export default function resolve (composite) {
 	if (!composite || typeof composite !== 'object') {
 		return Promise.resolve(composite);
 	} else if (Array.isArray(composite)) {
 		return Promise.all(composite.map(it => {
-			return resolve(it, root);
+			return resolve(it);
 		})).then(values => {
 			return values.filter(it => it !== undefined);
 		});
 	}
 
-	return expand(composite, root).then(composite => {
+	return expand(composite).then(composite => {
 		if (!composite) return;
-		const { '': path, ...props } = composite;
-		const keys = Object.keys(props);
+		const keys = Object.keys(composite);
 
 		return Promise.all(keys.map(key => {
-			return resolve(props[key], path);
+			return resolve(composite[key]);
 		})).then(values => {
 			const composite = {};
 

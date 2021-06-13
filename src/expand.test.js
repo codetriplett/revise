@@ -34,7 +34,6 @@ describe('expand', () => {
 		});
 
 		expect(actual).toEqual({
-			'': '/defaults.json',
 			value: 'candidates',
 			defaults: true,
 			overrides: true,
@@ -65,7 +64,6 @@ describe('expand', () => {
 		});
 
 		expect(actual).toEqual({
-			'': '/overrides.json',
 			value: 'candidates',
 			defaults: true,
 			overrides: true,
