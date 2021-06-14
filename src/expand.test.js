@@ -70,22 +70,4 @@ describe('expand', () => {
 			candidates: true
 		});
 	});
-
-	it('only allows layouts from list', async () => {
-		fetch.mockImplementation(url => {
-			switch (url) {
-				case '/component.json': return mock({
-					'': ['/layout.json'],
-					component: true
-				});
-			}
-		});
-
-		const actual = await expand({
-			'': '/component.json',
-			layout: true
-		}, './layout.json');
-
-		expect(actual).toEqual(undefined);
-	});
 });

@@ -63,13 +63,37 @@ describe('merge', () => {
 		]);
 	});
 
+	it('merges overrides array object to defaults array', () => {
+		const actual = merge([
+			'abc',
+			{
+				value: 'defaults',
+				defaults: true
+			}
+		], {
+			1: {
+				value: 'overrides',
+				overrides: true
+			}
+		});
+
+		expect(actual).toEqual([
+			'abc',
+			{
+				value: 'overrides',
+				defaults: true,
+				overrides: true
+			}
+		]);
+	});
+
 	it('removes empty object props', () => {
 		const actual = merge({
 			value: 'defaults',
 			defaults: true
 		}, {
 			value: 'overrides',
-			overrides: {}
+			overrides: { '': '' }
 		});
 
 		expect(actual).toEqual({
@@ -83,7 +107,7 @@ describe('merge', () => {
 			123,
 			'abc'
 		], [
-			{},
+			{ '': '' },
 			'xyz'
 		]);
 

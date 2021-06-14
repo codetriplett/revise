@@ -2,7 +2,7 @@ import extract from './extract';
 
 export default function Buttons ({ object = {}, composite, update }) {
 	const [key, sources, states, arrayed, ...composites] = composite;
-	const [custom,, overrides, candidates] = sources;
+	const candidates = sources[3];
 	const subobject = object[key];
 	let state = '';
 
@@ -18,8 +18,11 @@ export default function Buttons ({ object = {}, composite, update }) {
 		update(result);
 	}
 
-	if (states[1] !== composite) state = 'revert';
-	else if (candidates !== undefined) state = 'promote';
+	if (states[1] !== composite) {
+		state = 'revert';
+	} else if (states[2] !== composite && candidates !== undefined) {
+		state = 'promote';
+	}
 
 	return $`
 		<div class="property">

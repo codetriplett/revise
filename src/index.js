@@ -1,4 +1,5 @@
 import { readFile } from 'fs';
+import resolve from './resolve';
 
 function render (title, ...content) {
 	return render => `<!doctype html>
@@ -22,18 +23,28 @@ function respond (url) {
 	});
 }
 
-export default function revise (port, [directory, ...files], home) {
+export default function revise (port, [directory, ...files], callback) {
 	return require('@triplett/steward')(port, [
 		directory,
 		...files
-	], home)(/^(.+?(\.[^.]*)?)$/, (props, url, ext, file) => {
-		if (!ext) {
-			return render('Revise', { '': '#App' });
-		} else if (ext === '.json') {
+	], (...params) => {
+		const [{ post, put, get }, file] = params;
+		if (post || put) return render('Revise', { '': '#App' });
+		else if (!get) return callback ? callback(...params) : undefined;
+
+		return file(get).then(data => {
+			const json = JSON.parse(data);
+
+			return resolve(json, path => {
+				return file(path).then(data => JSON.parse(data));
+			});
+		});
+	})(/^(.+?(\.[^.]*)?)$/, (props, url, ext, file) => {
+		if (ext === '.json') {
 			const { '': body } = props;
 			return body ? file(url, body.file) : file(url);
+		} else if (url === 'app.min.js'|| url === 'app.css') {
+			return respond(`${__dirname}/${url}`);
 		}
-
-		return respond(`${__dirname}/${url}`);
 	});
 }

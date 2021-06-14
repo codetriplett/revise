@@ -1,12 +1,13 @@
 import $ from '@triplett/stew';
 import arrange from './arrange';
 import Buttons from './buttons';
-import resolve from './resolve';
 import stringify from './stringify';
 
 export default function App ({
 	'': {
 		'': hook,
+		post,
+		method,
 		path,
 		defaults,
 		overrides,
@@ -71,23 +72,24 @@ export default function App ({
 				return;
 			}
 
-			const { pathname, hash, href } = window.location;
-			const editing = ~href.indexOf('#');
+			const { search } = window.location;
+			const params = {};
 
-			Promise.all([
-				`${pathname}.json`,
-				hash.length > 1 && `${hash.slice(1).replace(/^(?!\/)/, '/')}.json`
-			].map(path => {
+			for (const string of search.slice(1).split('&')) {
+				const index = string.indexOf('=');
+				if (!~index) continue;
+				else params[string.slice(0, index)] = string.slice(index + 1);
+			}
+
+			const method = ['post', 'put'].find(key => () => {
+				return Object.prototype.hasOwnProperty.call(params, key)
+			});
+
+			const post = params[method];
+
+			Promise.all([post, params.get].map(path => {
 				return path && fetch(path).then(data => data.json());
 			})).then(([overrides, candidates]) => {
-				if (!editing) {
-					resolve(overrides).then(it => hook({
-						value: it ? JSON.stringify(it, null, '\t') : ''
-					}));
-
-					return;
-				}
-
 				const { '': path } = overrides;
 				let promise = Promise.resolve();
 				if (!candidates) candidates = {};
@@ -102,7 +104,7 @@ export default function App ({
 					]);
 
 					const [value] = stringify(composite);
-					hook({ path, defaults, overrides, candidates, value });
+					hook({ post, method, path, defaults, overrides, candidates, value });
 				});
 			});
 		}}
@@ -149,12 +151,13 @@ export default function App ({
 			type="button"
 			disabled=${!object}
 			onclick=${() => {
-				const { pathname } = window.location;
 				const file = objectString.replace(/\n+(?=\n)/g, '');
 
-				fetch(`${pathname}.json`, {
-					method: 'POST',
+				fetch(post, {
+					method: method.toUpperCase(),
 					body: `{"file":${JSON.stringify(file)}}`
+				}).then(() => {
+					window.location.reload();
 				});
 			}}
 		>Submit</>
