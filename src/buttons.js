@@ -22,6 +22,8 @@ export default function Buttons ({ object = {}, composite, update }) {
 		state = 'revert';
 	} else if (states[2] !== composite && candidates !== undefined) {
 		state = 'promote';
+	} else if (typeof subobject === 'boolean') {
+		state = 'toggle';
 	}
 
 	return $`
@@ -31,9 +33,13 @@ export default function Buttons ({ object = {}, composite, update }) {
 					class=${state}
 					type="button"
 					onclick=${() => {
-						if (state === 'revert') {
-							subupdate(states[1]);
-							return;
+						switch (state) {
+							case 'revert':
+								subupdate(states[1]);
+								return;
+							case 'toggle':
+								subupdate(!subobject);
+								return;
 						}
 
 						const index = 3;

@@ -110,14 +110,14 @@ export default function App ({
 		}}
 		${typing || collapsed ? $`
 			<button
-				class="toggle"
+				class="show"
 				type="button"
 				disabled=${!object}
 				onclick=${() => hook({ typing: false, collapsed: false })}
 			>Show</>
 		` : $`
 			<button
-				class="toggle"
+				class="show"
 				type="button"
 				disabled=${!object}
 				onclick=${() => hook({ typing: false, collapsed: true })}
