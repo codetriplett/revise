@@ -14,6 +14,17 @@
   ],
   "author": "triplett",
   "license": "MIT",
+	"files": [
+		"dist"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/codetriplett/revise.git"
+	},
+	"bugs": {
+		"url": "https://github.com/codetriplett/revise/issues"
+	},
+	"homepage": "https://github.com/codetriplett/revise#readme",
   "jest": {
     "setupFiles": [
       "<rootDir>/setupTests.js"

@@ -72,7 +72,7 @@ export default function App ({
 				return;
 			}
 
-			const { search } = window.location;
+			const { search, hash } = window.location;
 			const params = {};
 
 			for (const string of search.slice(1).split('&')) {
@@ -87,7 +87,7 @@ export default function App ({
 
 			const post = params[method];
 
-			Promise.all([post, params.get].map(path => {
+			Promise.all([post, hash.slice(1)].map(path => {
 				return path && fetch(path).then(data => data.json());
 			})).then(([overrides, candidates]) => {
 				const { '': path } = overrides;
