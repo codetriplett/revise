@@ -1,6 +1,6 @@
 {
   "name": "@triplett/revise",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple UI to manage JSON revisions",
   "main": "dist/revise.min.js",
   "scripts": {
@@ -14,17 +14,17 @@
   ],
   "author": "triplett",
   "license": "MIT",
-	"files": [
-		"dist"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/codetriplett/revise.git"
-	},
-	"bugs": {
-		"url": "https://github.com/codetriplett/revise/issues"
-	},
-	"homepage": "https://github.com/codetriplett/revise#readme",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codetriplett/revise.git"
+  },
+  "bugs": {
+    "url": "https://github.com/codetriplett/revise/issues"
+  },
+  "homepage": "https://github.com/codetriplett/revise#readme",
   "jest": {
     "setupFiles": [
       "<rootDir>/setupTests.js"
