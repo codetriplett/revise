@@ -127,13 +127,17 @@ export default function App ({
 			<pre class="candidates">${candidatesString}</>
 			${composite && $`
 				<div class="root">
-					${composite.slice(4).map(composite => $`
-						<${Buttons}
-							object=${object}
-							composite=${composite}
-							update=${object => hook({ value: JSON.stringify(object) })}
-						/>
-					`)}
+					<pre class="left"></>
+					<div class="right">
+						${composite.slice(4).map(composite => $`
+							<${Buttons}
+								method=${method}
+								object=${object}
+								composite=${composite}
+								update=${object => hook({ value: JSON.stringify(object) })}
+							/>
+						`)}
+					</>
 				</>
 			`}
 		`}

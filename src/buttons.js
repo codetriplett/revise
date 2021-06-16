@@ -1,10 +1,13 @@
 import extract from './extract';
 
-export default function Buttons ({ object = {}, composite, update }) {
+export default function Buttons ({
+	'': { '': hook, hovering },
+	method, object = {}, composite, update
+}) {
 	const [key, sources, states, arrayed, ...composites] = composite;
 	const candidates = sources[3];
 	const subobject = object[key];
-	let state = '';
+	let state = '', tooltip;
 
 	function subupdate (value) {
 		const result = Array.isArray(object) ? [] : {};
@@ -18,22 +21,45 @@ export default function Buttons ({ object = {}, composite, update }) {
 		update(result);
 	}
 
-	if (states[1] !== composite) {
+	if (key === '') {
+		state = 'navigate';
+	} else if (states[1] !== composite) {
 		state = 'revert';
+		tooltip = states[1];
 	} else if (states[2] !== composite && candidates !== undefined) {
 		state = 'promote';
+		tooltip = states[2];
 	} else if (typeof subobject === 'boolean') {
 		state = 'toggle';
+		tooltip = !subobject;
+	}
+
+	if (typeof tooltip === 'object') {
+		tooltip = '';
+	} else if (tooltip !== undefined) {
+		tooltip = [key, tooltip].map(it => {
+			return JSON.stringify(it);
+		}).join(': ');
 	}
 
 	return $`
-		<div class="property">
-			${key && state && $`
+		<div
+			class="property"
+			onmouseleave=${() => hook({ hovering: false })}
+		>
+			${state && $`
 				<button
 					class=${state}
 					type="button"
+					onmouseenter=${() => hook({ hovering: true })}
 					onclick=${() => {
 						switch (state) {
+							case 'navigate': {
+								const { location: { pathname } } = window;
+								const url = `${pathname}?${method}=${subobject}`;
+								window.open(url, '_blank');
+								return;
+							}
 							case 'revert':
 								subupdate(states[1]);
 								return;
@@ -54,16 +80,21 @@ export default function Buttons ({ object = {}, composite, update }) {
 					}}
 				/>`
 			}
+			${hovering && tooltip && $`<div class="tooltip">${tooltip}</>`}
 		</>
 		${arrayed !== undefined && $`
 			<div class="object">
-				${composites.map(it => $`
-					<${Buttons}
-						object=${subobject}
-						composite=${it}
-						update=${subupdate}
-					/>
-				`)}
+				<pre class="left"></>
+				<div class="right">
+					${composites.map(it => $`
+						<${Buttons}
+							method=${method}
+							object=${subobject}
+							composite=${it}
+							update=${subupdate}
+						/>
+					`)}
+				</>
 			</>
 		`}
 	`;

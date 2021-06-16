@@ -19,7 +19,7 @@ export default function stringify (composite, indentation = '') {
 
 		for (const [i, string] of stringify(it, indentation).entries()) {
 			if (/^[^\n]/.test(string)) {
-				if (!arrayed) string = `"${key}": ${string}`;
+				if (!arrayed) string = `${JSON.stringify(key)}: ${string}`;
 				string = `${indentation}${string},`;
 			}
 

@@ -1,13 +1,13 @@
-* { box-sizing: border-box; }
+* { box-sizing: border-box; line-height: 18px; }
 html, body { margin: 0; }
-.property { display: block; height: 18px; }
-.property button { height: 100%; font-size: 12px; line-height: 12px; z-index: 1; }
+.property { display: block; }
+.property:before { content: '\200b'; }
+.property button { height: auto; font-size: 12px; z-index: 1; }
 
 button {
 	border: 1px solid black;
 	border-radius: 3px;
 	font-size: 15px;
-	line-height: 15px;
 	height: 25px;
 }
 
@@ -22,8 +22,29 @@ button {
 	top: 29px;
 }
 
-.object {
-	left: 33px;
+.root, .object, .property { display: flex; }
+.root { pointer-events: none; }
+.left, .right, .property { position: relative; }
+.left { flex: 0; padding: 0; }
+.left:before { content: '\0009'; float: left; }
+.right { flex: 1; }
+.right:after { content: '\200b'; }
+.property button { line-height: 0; }
+
+.property {
+	left: -5px;
+	top: 1px;
+	transform: translateX(-100%);
+	pointer-events: auto;
+}
+
+.tooltip {
+	position: absolute;
+	left: 100%;
+	width: 100vw;
+	padding-left: 3px;
+	font-family: monospace;
+	font-size: 15px;
 }
 
 .root button {
@@ -32,20 +53,23 @@ button {
 	font-weight: bold;
 }
 
-.object { padding-bottom: 18px; }
 .revert { border-color: #f33; color: #f33; background: #fcc; }
+.revert + .tooltip { background: #fcc; }
 .revert:before { content: '<<'; }
 .promote { border-color: #33f; color: #33f; background: #ccf; }
+.promote + .tooltip { background: #ccf; }
 .promote:before { content: '>>'; }
 .toggle { border-color: #333; color: #333; background: #ccc; }
+.toggle + .tooltip { background: #ccc; }
 .toggle:before { content: '\00a0'; }
+.navigate { border-color: #292; color: #292; background: #afa; }
+.navigate:before { content: '\00a0'; }
 
 pre, textarea {
 	font-family: monospace;
 	margin: 0;
 	padding: 12px 5px;
 	font-size: 15px;
-	line-height: 18px;
 	-webkit-tab-size: 4;
 	   -moz-tab-size: 4;
 	     -o-tab-size: 4;
