@@ -13,14 +13,12 @@ export default function App ({
 		overrides,
 		candidates,
 		value,
+		selectionStart,
+		selectionEnd,
 		typing,
 		collapsed
 	}
 }) {
-	if (value !== undefined && !candidates) {
-		return $`<pre class="composite">${value}</>`;
-	}
-
 	let strings = [value || '{\n}', '', '', ''], object, composite;
 	try { object = JSON.parse(value); } catch (err) {}
 
@@ -57,6 +55,10 @@ export default function App ({
 
 				const textarea = hook('textarea');
 				const { scrollX, scrollY } = window;
+
+				if (selectionStart !== undefined && selectionEnd !== undefined) {
+					Object.assign(textarea, { selectionStart, selectionEnd });
+				}
 
 				Object.assign(textarea.style, {
 					width: 'auto',
@@ -143,10 +145,36 @@ export default function App ({
 		`}
 		<textarea ${{ '': 'textarea' }}
 			spellcheck="false"
+			onkeydown=${event => {
+				if (event.key !== 'Tab') return;
+				event.preventDefault();
+
+				const textarea = hook('textarea');
+				const { selectionStart, selectionEnd } = textarea;
+				const selectionPosition = selectionStart + 1;
+				const prefix = value.slice(0, selectionStart);
+				const suffix = value.slice(selectionEnd);
+
+				hook({
+					selectionStart: selectionPosition,
+					selectionEnd: selectionPosition,
+					typing: true,
+					value: `${prefix}\t${suffix}`
+				});
+
+				return false;
+			}}
 			onkeyup=${event => {
 				event.preventDefault();
 				const { target: { value } } = event;
-				hook({ typing: true, value });
+
+				hook({
+					selectionStart: undefined,
+					selectionEnd: undefined,
+					typing: true,
+					value
+				});
+
 				return false;
 			}}
 		>${objectString}</>

@@ -27,9 +27,7 @@ export default function arrange (sources, key) {
 		return composite;
 	}
 
-	composite.push(arrayed);
-
-	const keys = sources.map((it, i) => {
+	let keys = sources.map((it, i) => {
 		if (it && typeof it === 'object') {
 			const keys = Object.keys(it);
 			return arrayed ? keys.filter(it => it && !isNaN(it)) : keys;
@@ -39,8 +37,11 @@ export default function arrange (sources, key) {
 		sources[i] = undefined;
 		return [];
 	});
+	
+	keys = new Set([].concat(...keys));
+	composite.push(arrayed);
 
-	for (const key of new Set([].concat(...keys))) {
+	for (const key of keys) {
 		const subcomposite = arrange(sources, key);
 		const [subkey, subsources, substates] = subcomposite;
 		const subobject = subsources[index];
@@ -57,6 +58,15 @@ export default function arrange (sources, key) {
 		}
 
 		composite.push(subcomposite);
+	}
+
+	if (!keys.size) {
+		Object.assign(values, backup);
+
+		if (values[2] === undefined) {
+			if (values[0]) states[1] = backup[2];
+			if (values[3]) states[2] = backup[3];
+		}
 	}
 
 	return composite;
