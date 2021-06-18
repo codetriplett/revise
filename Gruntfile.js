@@ -61,7 +61,7 @@ module.exports = function (grunt) {
 					{
 						expand: true,
 						cwd: 'src/',
-						src: 'app.css',
+						src: ['app.css', 'cli.js'],
 						dest: 'dist/',
 						flatten: true
 					}

@@ -9,6 +9,8 @@ export default function merge (defaults, overrides = defaults) {
 		return overrides
 			.map((it, i) => merge(defaults[i], it))
 			.filter(it => it !== undefined);
+	} else if (typeof defaults !== 'object') {
+		defaults = {};
 	}
 
 	if (overrides[''] === '') return;

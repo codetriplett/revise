@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "A simple UI to manage JSON revisions",
   "main": "dist/revise.min.js",
+  "bin": "dist/cli.js",
   "scripts": {
     "test": "jest --watch",
     "build": "rimraf dist && grunt",
