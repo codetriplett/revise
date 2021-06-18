@@ -51,6 +51,7 @@ describe('resolve', () => {
 						'': '/component.json'
 					}
 				},
+				undefined,
 				undefined
 			],
 			[
@@ -59,6 +60,7 @@ describe('resolve', () => {
 					value: 'layout',
 					layout: true
 				},
+				undefined,
 				undefined
 			]
 		]);

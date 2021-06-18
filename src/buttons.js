@@ -37,9 +37,11 @@ export default function Buttons ({
 	if (typeof tooltip === 'object') {
 		tooltip = '';
 	} else if (tooltip !== undefined) {
-		tooltip = [key, tooltip].map(it => {
-			return JSON.stringify(it);
-		}).join(': ');
+		tooltip = JSON.stringify(tooltip);
+
+		if (!Array.isArray(object)) {
+			tooltip = `${JSON.stringify(key)}: ${tooltip}`;
+		}
 	}
 
 	return $`

@@ -46,14 +46,14 @@ export default function revise (...params) {
 		return chain.reduce((server, params) => {
 			return server(...params);
 		}, require('@triplett/steward')(port, files, (...params) => {
-			const [{ post, put, get }, file] = params;
+			const [{ post, put, get, id }, file] = params;
 			if (post || put) return render('Revise', { '': '#App' });
 			else if (!get) return callback ? callback(...params) : undefined;
 	
 			return file(get).then(data => {
 				const json = JSON.parse(data);
 	
-				return resolve(json, path => {
+				return resolve(json, id, path => {
 					return file(path).then(data => JSON.parse(data));
 				});
 			});
