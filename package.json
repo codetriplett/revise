@@ -1,6 +1,6 @@
 {
   "name": "@triplett/revise",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A simple UI to manage JSON revisions",
   "main": "dist/revise.min.js",
   "bin": "dist/cli.js",
