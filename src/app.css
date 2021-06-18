@@ -2,9 +2,9 @@
 html, body { margin: 0; }
 .property { display: block; }
 .property:before { content: '\200b'; }
-.property button { height: auto; font-size: 12px; z-index: 1; }
+.property button, .property .highlight { height: auto; font-size: 12px; z-index: 1; }
 
-button {
+button, .highlight {
 	border: 1px solid black;
 	border-radius: 3px;
 	font-size: 15px;
@@ -29,7 +29,7 @@ button {
 .left:before { content: '\0009'; float: left; }
 .right { flex: 1; }
 .right:after { content: '\200b'; }
-.property button { line-height: 0; }
+.property button, .property .highlight { line-height: 0; }
 
 .property {
 	left: -5px;
@@ -47,7 +47,7 @@ button {
 	font-size: 15px;
 }
 
-.root button {
+.root button, .root .highlight {
 	content: '??';
 	width: 30px;
 	font-weight: bold;
@@ -62,8 +62,10 @@ button {
 .toggle { border-color: #333; color: #333; background: #ccc; }
 .toggle + .tooltip { background: #ccc; }
 .toggle:before { content: '\00a0'; }
-.navigate { border-color: #292; color: #292; background: #afa; }
-.navigate:before { content: '\00a0'; }
+.navigate, .highlight { border-color: #292; color: #292; background: #afa; }
+.highlight + .tooltip { background: #afa; }
+.navigate:before, .highlight:before { content: '\00a0'; }
+.highlight { border: none; border-radius: 0; }
 
 pre, textarea {
 	font-family: monospace;
@@ -83,8 +85,9 @@ pre { left: 0; top: 0; z-index: -1; opacity: 0.5; }
 .overrides { color: orange; }
 .candidates { color: blue; }
 .composite { opacity: 1; }
-.show { right: 5px; top: 5px; }
-.submit { float: right; position: relative; left: -5px; top: -51px; }
+.show, .submit { position: fixed; right: 10px; }
+.show { top: 10px; }
+.submit { bottom: 10px; }
 
 textarea {
 	border: none;

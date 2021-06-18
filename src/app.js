@@ -9,6 +9,7 @@ export default function App ({
 		post,
 		method,
 		path,
+		compare,
 		defaults,
 		overrides,
 		candidates,
@@ -38,19 +39,20 @@ export default function App ({
 	return $`
 		${prev => {
 			if (prev) {
-				if (!typing && !collapsed && object && (object[''] || '') !== path) {
+				if (!compare && !typing && !collapsed && object
+					&& (object[''] || '') !== path) {
 					let promise = Promise.resolve();
 					path = (object[''] || '');
 
-					if (path) {
+					if (path && typeof path === 'string') {
 						promise = fetch(`${path.replace(/^(?!\/)/, '/')}.json`)
-							.then(data => data.json());
+							.then(data => data.json())
+							.catch(() => {})
+							.then(defaults => hook({
+								path,
+								defaults
+							}));
 					}
-
-					promise.catch(() => {}).then(defaults => hook({
-						path,
-						defaults
-					}));
 				}
 
 				const textarea = hook('textarea');
@@ -88,25 +90,49 @@ export default function App ({
 			});
 
 			const post = params[method];
+			const paths = [post, hash.slice(1)];
 
-			Promise.all([post, hash.slice(1)].map(path => {
-				return path && fetch(path).then(data => data.json());
-			})).then(([overrides, candidates]) => {
-				const { '': path } = overrides;
-				let promise = Promise.resolve();
+			if (Object.prototype.hasOwnProperty.call(params, 'get')) {
+				const named = Object.prototype.hasOwnProperty.call(params, 'id');
+				paths.push(`/?get=${params.get}${named ? `&id=${params.id}` : ''}`);
+			}
+
+			Promise.all(paths.map(path => {
+				return path && fetch(path).then(data => data.json()).catch(() => {});
+			})).then(([overrides = {}, candidates, result]) => {
+				let { '': path } = overrides;
+				let object = overrides, promise = Promise.resolve(), compare;
 				if (!candidates) candidates = {};
-				if (path) promise = fetch(path).then(data => data.json());
+
+				if (paths.length === 3) {
+					compare = true;
+					object = result;
+				} else if (path && typeof path === 'string') {
+					promise = fetch(path).then(data => data.json()).catch(() => {});
+				} else {
+					path = undefined;
+				}
 
 				promise.then(defaults => {
 					const composite = arrange([
-						overrides,
+						object,
 						defaults,
 						overrides,
 						candidates
 					]);
 
 					const [value] = stringify(composite);
-					hook({ post, method, path, defaults, overrides, candidates, value });
+	
+					hook({
+						post,
+						method,
+						path,
+						compare,
+						defaults,
+						overrides,
+						candidates,
+						value
+					});
 				});
 			});
 		}}
@@ -133,6 +159,7 @@ export default function App ({
 					<div class="right">
 						${composite.slice(4).map(composite => $`
 							<${Buttons}
+								compare=${compare}
 								method=${method}
 								object=${object}
 								composite=${composite}

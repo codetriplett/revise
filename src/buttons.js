@@ -2,10 +2,10 @@ import extract from './extract';
 
 export default function Buttons ({
 	'': { '': hook, hovering },
-	method, object = {}, composite, update
+	compare, method, object = {}, composite, update
 }) {
 	const [key, sources, states, arrayed, ...composites] = composite;
-	const candidates = sources[3];
+	const [primary,, overrides, candidates] = sources;
 	const subobject = object[key];
 	let state = '', tooltip;
 
@@ -21,7 +21,7 @@ export default function Buttons ({
 		update(result);
 	}
 
-	if (key === '') {
+	if (key === '' && subobject && typeof subobject === 'string') {
 		state = 'navigate';
 	} else if (states[1] !== composite) {
 		state = 'revert';
@@ -32,6 +32,16 @@ export default function Buttons ({
 	} else if (typeof subobject === 'boolean') {
 		state = 'toggle';
 		tooltip = !subobject;
+	}
+
+	if (compare) {
+		if (state === 'revert' && primary !== undefined
+			&& typeof overrides !== 'object') {
+			state = 'highlight';
+		} else {
+			state = '';
+			tooltip = undefined;
+		}
 	}
 
 	if (typeof tooltip === 'object') {
@@ -49,7 +59,10 @@ export default function Buttons ({
 			class="property"
 			onmouseleave=${() => hook({ hovering: false })}
 		>
-			${state && $`
+			${state && (
+				state === 'highlight' ? $`
+				<span class=${state} onmouseenter=${() => hook({ hovering: true })} />
+				` : $`
 				<button
 					class=${state}
 					type="button"
@@ -81,7 +94,7 @@ export default function Buttons ({
 						subupdate(value);
 					}}
 				/>`
-			}
+			)}
 			${hovering && tooltip && $`<div class="tooltip">${tooltip}</>`}
 		</>
 		${arrayed !== undefined && $`
@@ -90,6 +103,7 @@ export default function Buttons ({
 				<div class="right">
 					${composites.map(it => $`
 						<${Buttons}
+							compare=${compare}
 							method=${method}
 							object=${subobject}
 							composite=${it}

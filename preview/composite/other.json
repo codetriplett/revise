@@ -1,0 +1,10 @@
+{
+	"components": [
+		{
+			"component-value": "details (prod)",
+			"component-prod": true,
+			"layout-value": "details (prod)",
+			"layout-prod": true
+		}
+	]
+}

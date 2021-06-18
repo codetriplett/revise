@@ -1,0 +1,12 @@
+{
+	"components": [
+		{
+			"component-value": "details (stage)",
+			"component-prod": true,
+			"component-stage": true,
+			"layout-value": "details (stage)",
+			"layout-prod": true,
+			"layout-stage": true
+		}
+	]
+}

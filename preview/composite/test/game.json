@@ -1,0 +1,24 @@
+{
+	"components": [
+		{
+			"component-value": "media (test)",
+			"component-prod": true,
+			"component-stage": true,
+			"component-test": true,
+			"layout-value": "media (test)",
+			"layout-prod": true,
+			"layout-stage": true,
+			"layout-test": true
+		},
+		{
+			"component-value": "details (test)",
+			"component-prod": true,
+			"component-stage": true,
+			"component-test": true,
+			"layout-value": "details (test)",
+			"layout-prod": true,
+			"layout-stage": true,
+			"layout-test": true
+		}
+	]
+}
