@@ -41,17 +41,18 @@ export default function App ({
 			if (prev) {
 				if (!compare && !typing && !collapsed && object
 					&& (object[''] || '') !== path) {
-					let promise = Promise.resolve();
 					path = (object[''] || '');
 
 					if (path && typeof path === 'string') {
-						promise = fetch(`${path.replace(/^(?!\/)/, '/')}.json`)
+						fetch(path)
 							.then(data => data.json())
 							.catch(() => {})
 							.then(defaults => hook({
 								path,
 								defaults
 							}));
+					} else {
+						hook({ path, defaults: {} });
 					}
 				}
 
@@ -135,6 +136,24 @@ export default function App ({
 					});
 				});
 			});
+			
+			function update () {
+				const { hash } = window.location;
+
+				if (hash.length > 1) {
+					fetch(hash.slice(1))
+						.then(data => data.json())
+						.catch(() => {})
+						.then(candidates => hook({
+							candidates
+						}));
+				} else {
+					hook({ candidates: {} });
+				}
+			}
+
+			window.addEventListener('hashchange', update);
+			return () => window.removeEventListener('hashchange', update);
 		}}
 		${typing || collapsed ? $`
 			<button

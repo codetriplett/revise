@@ -1,13 +1,18 @@
 import { readFile } from 'fs';
 import resolve from './resolve';
 
-function render (title, ...content) {
+function render (title, resources, ...content) {
 	return render => `<!doctype html>
 <html lang="en">
 	<head>
 		<title>${title}</title>
-		<link rel="stylesheet" href="/app.css">
-		<script src="/app.min.js"></script>
+		${resources.map(it => {
+			if (it.endsWith('.css')) {
+				return `<link rel="stylesheet" href="${it}">`;
+			} else if (it.endsWith('.js')) {
+				return `<script src="${it}"></script>`;
+			}
+		}).join('\n\t\t')}
 	</head>
 	<body>
 		${content.map(it => render(it)).join('')}
@@ -47,18 +52,27 @@ export default function revise (...params) {
 			return server(...params);
 		}, require('@triplett/steward')(port, files, (...params) => {
 			const [{ post, put, get, id }, file] = params;
-			if (post || put) return render('Revise', { '': '#App' });
-			else if (!get) return callback ? callback(...params) : undefined;
-	
-			return file(get).then(data => {
-				const json = JSON.parse(data);
-	
-				return resolve(json, id, path => {
-					return file(path).then(data => JSON.parse(data));
+
+			if (post || put) {
+				return render('Revise', ['app.css', 'app.min.js'], { '': '#App' });
+			} else if (get) {
+				return file(get).then(data => {
+					const json = JSON.parse(data);
+
+					return resolve(json, id, path => {
+						return file(path).then(data => JSON.parse(data));
+					});
 				});
+			} else if (callback) {
+				return callback(...params);
+			}
+
+			return locate(file).then(folder => {
+				return render('Revise', ['home.css', 'home.min.js'], { '': '#Home', folder });
 			});
 		}))(/^(.+\.(?:js|css))$/, (props, url) => {
-			if (url === 'app.min.js'|| url === 'app.css') {
+			if (url === 'app.min.js'|| url === 'app.css'
+				|| url === 'home.min.js'|| url === 'home.css') {
 				return respond(`${__dirname}/${url}`);
 			}
 		});

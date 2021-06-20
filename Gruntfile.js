@@ -61,7 +61,7 @@ module.exports = function (grunt) {
 					{
 						expand: true,
 						cwd: 'src/',
-						src: ['app.css', 'cli.js'],
+						src: ['app.css', 'home.css', 'cli.js'],
 						dest: 'dist/',
 						flatten: true
 					}
@@ -75,6 +75,10 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 
 	grunt.registerTask('before', () => {
+		merge('./dist/home.min.js', [
+			'./src/home.js',
+		]);
+
 		merge('./dist/app.min.js', [
 			'./src/arrange.js',
 			'./src/buttons.js',
@@ -85,6 +89,7 @@ module.exports = function (grunt) {
 
 		merge('./dist/revise.min.js', [
 			'./src/expand.js',
+			'./src/locate.js',
 			'./src/merge.js',
 			'./src/resolve.js',
 			'./src/index.js'
@@ -92,6 +97,11 @@ module.exports = function (grunt) {
 	});
 
 	grunt.registerTask('after', function () {
+		grunt.file.write('./dist/home.min.js', `(function () {
+			${grunt.file.read('./dist/home.min.js')}
+			${direct('Home')}
+		})();`);
+
 		grunt.file.write('./dist/app.min.js', `(function () {
 			${grunt.file.read('./dist/app.min.js')}
 			${direct('App')}

@@ -21,7 +21,7 @@ export default function expand (composite, id, get, ...chain) {
 	}
 
 	if (Array.isArray(path)) {
-		return Promise.resolve(id && ~path.indexOf(id) ? props : undefined);
+		return Promise.resolve(id === undefined || ~path.indexOf(id) ? props : undefined);
 	} else if (!get) {
 		get = path => fetch(path).then(data => data.json());
 	}
