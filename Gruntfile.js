@@ -35,6 +35,7 @@ module.exports = function (grunt) {
 			main: {
 				files: {
 					'dist/app.min.js': 'dist/app.min.js',
+					'dist/home.min.js': 'dist/home.min.js',
 					'dist/revise.min.js': 'dist/revise.min.js'
 				}
 			}
@@ -51,6 +52,7 @@ module.exports = function (grunt) {
 				},
 				files: {
 					'dist/app.min.js': 'dist/app.min.js',
+					'dist/home.min.js': 'dist/home.min.js',
 					'dist/revise.min.js': 'dist/revise.min.js'
 				}
 			}
