@@ -12,20 +12,20 @@ export default function resolve (composite, id, get) {
 	}
 
 	return expand(composite, id, get).then(composite => {
-		if (!composite) return;
+		if (typeof composite !== 'object') return composite;
 		const keys = Object.keys(composite);
 
 		return Promise.all(keys.map(key => {
 			return resolve(composite[key], id, get);
 		})).then(values => {
-			const composite = {};
+			const result = Array.isArray(composite) ? [] : {};
 
 			for (const [i, key] of keys.entries()) {
 				const value = values[i];
-				if (value !== undefined) composite[key] = value;
+				if (value !== undefined) result[key] = value;
 			}
 
-			return composite;
+			return result;
 		});
 	});
 }
