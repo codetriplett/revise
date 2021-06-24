@@ -39,20 +39,21 @@ export default function App ({
 	return $`
 		${prev => {
 			if (prev) {
-				if (!compare && !typing && !collapsed && object
-					&& (object[''] || '') !== path) {
-					path = (object[''] || '');
+				if (!compare && !typing && !collapsed && object) {
+					const value = object[''];
 
-					if (path && typeof path === 'string') {
-						fetch(path)
-							.then(data => data.json())
-							.catch(() => {})
-							.then(defaults => hook({
-								path,
-								defaults
-							}));
-					} else {
-						hook({ path, defaults: {} });
+					if (value && typeof value === 'string') {
+						if (value !== path) {
+							fetch(value)
+								.then(data => data.json())
+								.catch(() => {})
+								.then(defaults => hook({
+									path: value,
+									defaults
+								}));
+						}
+					} else if (path !== undefined) {
+						hook({ path: undefined, defaults: {} });
 					}
 				}
 
