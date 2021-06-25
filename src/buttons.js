@@ -5,9 +5,11 @@ export default function Buttons ({
 	compare, method, object = {}, composite, update
 }) {
 	const [key, sources, states, arrayed, ...composites] = composite;
-	const [primary,, overrides, candidates] = sources;
+	const [primary,, overrides, candidates, result] = sources;
 	const subobject = object[key];
-	let state = '', tooltip;
+	let state = '', flag = subobject, tooltip;
+	let flagged = typeof flag === 'boolean';
+	let tooltap = flag;
 
 	function subupdate (value) {
 		const result = Array.isArray(object) ? [] : {};
@@ -29,9 +31,15 @@ export default function Buttons ({
 	} else if (states[2] !== composite && candidates !== undefined) {
 		state = 'promote';
 		tooltip = states[2];
-	} else if (typeof subobject === 'boolean') {
+	} else if (flagged || flag === undefined) {
+		if (!flagged) {
+			flag = result;
+			flagged = typeof flag === 'boolean';
+		}
+
 		state = 'toggle';
-		tooltip = !subobject;
+		tooltip = flagged ? !flag : flag;
+		tooltap = flag;
 	}
 
 	if (compare) {
@@ -41,6 +49,7 @@ export default function Buttons ({
 		} else {
 			state = '';
 			tooltip = undefined;
+			tooltap = undefined;
 		}
 	}
 
@@ -48,15 +57,17 @@ export default function Buttons ({
 		tooltip = '';
 	} else if (tooltip !== undefined) {
 		tooltip = JSON.stringify(tooltip);
+		tooltap = JSON.stringify(tooltap);
 
 		if (!Array.isArray(object)) {
 			tooltip = `${JSON.stringify(key)}: ${tooltip}`;
+			tooltap = `${JSON.stringify(key)}: ${tooltap}`;
 		}
 	}
 
 	return $`
 		<div
-			class="property"
+			class=${['property', hovering && 'active']}
 			onmouseleave=${() => hook({ hovering: false })}
 		>
 			${state && (
@@ -79,7 +90,7 @@ export default function Buttons ({
 								subupdate(states[1]);
 								return;
 							case 'toggle':
-								subupdate(!subobject);
+								subupdate(flagged ? !flag : flag);
 								return;
 						}
 
@@ -95,7 +106,10 @@ export default function Buttons ({
 					}}
 				/>`
 			)}
-			${hovering && tooltip && $`<div class="tooltip">${tooltip}</>`}
+			${hovering && tooltip && $`
+				<div class="tooltip">${tooltap}</>
+				<div class="tooltip">${tooltip}</>
+			`}
 		</>
 		${arrayed !== undefined && $`
 			<div class="object">

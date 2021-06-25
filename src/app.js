@@ -8,11 +8,11 @@ export default function App ({
 		'': hook,
 		post,
 		method,
-		path,
 		compare,
 		defaults,
 		overrides,
 		candidates,
+		result,
 		value,
 		selectionStart,
 		selectionEnd,
@@ -24,7 +24,7 @@ export default function App ({
 	try { object = JSON.parse(value); } catch (err) {}
 
 	if (!typing) {
-		const sources = collapsed ? [] : [defaults, overrides, candidates];
+		const sources = collapsed ? [] : [defaults, overrides, candidates, result];
 		composite = arrange([object, ...sources]);
 		strings = stringify(composite);
 	}
@@ -33,30 +33,13 @@ export default function App ({
 		objectString,
 		defaultsString,
 		overridesString,
-		candidatesString
+		candidatesString,
+		resultString
 	] = strings;
 
 	return $`
 		${prev => {
 			if (prev) {
-				if (!compare && !typing && !collapsed && object) {
-					const value = object[''];
-
-					if (value && typeof value === 'string') {
-						if (value !== path) {
-							fetch(value)
-								.then(data => data.json())
-								.catch(() => {})
-								.then(defaults => hook({
-									path: value,
-									defaults
-								}));
-						}
-					} else if (path !== undefined) {
-						hook({ path: undefined, defaults: {} });
-					}
-				}
-
 				const textarea = hook('textarea');
 				const { scrollX, scrollY } = window;
 
@@ -92,12 +75,15 @@ export default function App ({
 			});
 
 			const post = params[method];
-			const paths = [post, hash.slice(1)];
+			const resolve = Object.prototype.hasOwnProperty.call(params, 'get');
+			const named = Object.prototype.hasOwnProperty.call(params, 'id');
+			const get = resolve ? params.get : post;
 
-			if (Object.prototype.hasOwnProperty.call(params, 'get')) {
-				const named = Object.prototype.hasOwnProperty.call(params, 'id');
-				paths.push(`/?get=${params.get}${named ? `&id=${params.id}` : ''}`);
-			}
+			const paths = [
+				post,
+				hash.slice(1),
+				`/?get=${get}${named ? `&id=${params.id}` : ''}`
+			];
 
 			Promise.all(paths.map(path => {
 				return path && fetch(path).then(data => data.json()).catch(() => {});
@@ -106,7 +92,7 @@ export default function App ({
 				let object = overrides, promise = Promise.resolve(), compare;
 				if (!candidates) candidates = {};
 
-				if (paths.length === 3) {
+				if (resolve) {
 					compare = true;
 					object = result;
 				} else if (path && typeof path === 'string') {
@@ -120,7 +106,8 @@ export default function App ({
 						object,
 						defaults,
 						overrides,
-						candidates
+						candidates,
+						result
 					]);
 
 					const [value] = stringify(composite);
@@ -128,11 +115,11 @@ export default function App ({
 					hook({
 						post,
 						method,
-						path,
 						compare,
 						defaults,
 						overrides,
 						candidates,
+						result,
 						value
 					});
 				});
@@ -173,6 +160,7 @@ export default function App ({
 			<pre class="defaults">${defaultsString}</>
 			<pre class="overrides">${overridesString}</>
 			<pre class="candidates">${candidatesString}</>
+			<pre class="result">${resultString}</>
 			${composite && $`
 				<div class="root">
 					<pre class="left"></>

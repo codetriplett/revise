@@ -41,9 +41,9 @@ button, .highlight {
 .tooltip {
 	position: absolute;
 	left: 100%;
-	width: 100vw;
 	padding-left: 3px;
 	font-family: monospace;
+	white-space: nowrap;
 	font-size: 15px;
 }
 
@@ -54,18 +54,20 @@ button, .highlight {
 }
 
 .revert { border-color: #f33; color: #f33; background: #fcc; }
-.revert + .tooltip { background: #fcc; }
+.revert ~ .tooltip { background: #fcc; }
 .revert:before { content: '<<'; }
 .promote { border-color: #33f; color: #33f; background: #ccf; }
-.promote + .tooltip { background: #ccf; }
+.promote ~ .tooltip { background: #ccf; }
 .promote:before { content: '>>'; }
 .toggle { border-color: #333; color: #333; background: #ccc; }
-.toggle + .tooltip { background: #ccc; }
+.toggle ~ .tooltip { background: #ccc; }
 .toggle:before { content: '\00a0'; }
-.navigate, .highlight { border-color: #292; color: #292; background: #afa; }
-.highlight + .tooltip { background: #afa; }
+.navigate { border-color: #292; color: #292; background: #afa; }
 .navigate:before, .highlight:before { content: '\00a0'; }
 .highlight { border: none; border-radius: 0; }
+button + .tooltip, .highlight + .tooltip { color: transparent; }
+.highlight, .highlight ~ .tooltip { background: #afa; }
+.active .highlight, .active .highlight ~ .tooltip { background: #fcc; }
 
 pre, textarea {
 	font-family: monospace;
@@ -81,7 +83,7 @@ pre, textarea {
 
 pre, .show { position: absolute; }
 pre { left: 0; top: 0; z-index: -1; opacity: 0.5; }
-.defaults { color: gray; }
+.defaults, .result { color: gray; }
 .overrides { color: orange; }
 .candidates { color: blue; }
 .composite { opacity: 1; }
